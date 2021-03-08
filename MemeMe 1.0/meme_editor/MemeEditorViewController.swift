@@ -37,22 +37,23 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
         super.viewDidLoad()
         
         imageView.contentMode = .scaleAspectFit
-        
         pickFromGalleryButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
-        
-        headerTextView.defaultTextAttributes = memeTextAttributes
-        footerTextView.defaultTextAttributes = memeTextAttributes
         
         headerTextViewDelegate = MemeCaptionTextViewDelegate(initialText: initialHeaderText)
         footerTextViewDelegate = MemeCaptionTextViewDelegate(initialText: initialFooterText)
-        
-        headerTextView.delegate = headerTextViewDelegate
-        footerTextView.delegate = footerTextViewDelegate
+        configureTextField(target: headerTextView, delegate: headerTextViewDelegate)
+        configureTextField(target: footerTextView, delegate: footerTextViewDelegate)
         
         resetViews()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func configureTextField(target: UITextField, delegate: UITextFieldDelegate) {
+        target.defaultTextAttributes = memeTextAttributes
+        target.textAlignment = NSTextAlignment.center
+        target.delegate = delegate
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -98,16 +99,17 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
     }
     
     @IBAction private func onPickImageFromGalleryClicked() {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
+        showImagePickerForSourceType(sourceType: .photoLibrary)
     }
     
     @IBAction private func onPickImageFromCameraClicked() {
+        showImagePickerForSourceType(sourceType: .camera)
+    }
+    
+    private func showImagePickerForSourceType(sourceType: UIImagePickerController.SourceType) {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
-        imagePickerController.sourceType = .camera
+        imagePickerController.sourceType = sourceType
         present(imagePickerController, animated: true, completion: nil)
     }
     
@@ -144,8 +146,7 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
     
     func generateCustomizedImageFromScreenContent() -> UIImage {
         // Hide navbar and toolbar for capturing screen
-        self.navigationController?.navigationBar.isHidden = true
-        toolbar.isHidden = true
+        changeHeaderAndFooterBarVisibility(show: false)
         
         UIGraphicsBeginImageContext(self.view.frame.size)
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
@@ -153,10 +154,14 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
         UIGraphicsEndImageContext()
         
         // Show navbar and toolbar again
-        self.navigationController?.navigationBar.isHidden = false
-        toolbar.isHidden = false
+        changeHeaderAndFooterBarVisibility(show: true)
         
         return customizedImage
+    }
+    
+    private func changeHeaderAndFooterBarVisibility(show: Bool) {
+        self.navigationController?.navigationBar.isHidden = !show
+        toolbar.isHidden = !show
     }
     
     // MARK: KeyboardInteractions
