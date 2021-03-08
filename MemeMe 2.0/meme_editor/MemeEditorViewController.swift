@@ -78,7 +78,7 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
     
     // MARK: Button actions
     
-    @IBAction private func onShareButtonClicked() {
+    @IBAction func onShareButtonClicked() {
         // Collect image data
         let customizedImage = generateCustomizedImageFromScreenContent()
         let memeData = collectMemeDataFromScreen(customizedImage: customizedImage)
@@ -96,6 +96,7 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
     
     @IBAction private func onCancelButtonClicked() {
         resetViews()
+        dismiss(animated: true)
     }
     
     @IBAction private func onPickImageFromGalleryClicked() {
@@ -120,6 +121,9 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let filePath = documentDirectory.appendingPathComponent("\(memeData.topText).png")
         try? imageAsPNG?.write(to: filePath)
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.memes.append(memeData)
     }
     
     private func saveImageToPhotoAlbums(image: UIImage) {
