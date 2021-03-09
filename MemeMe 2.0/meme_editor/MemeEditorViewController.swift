@@ -89,6 +89,7 @@ class MemeEditorViewController : UIViewController, UIImagePickerControllerDelega
             if success {
                 self.saveMemeToDocumentsDirectory(memeData: memeData)
                 self.saveImageToPhotoAlbums(image: memeData.customizedImage)
+                self.dismiss(animated: true, completion: nil)
             }
         }
         present(activityViewController, animated: true, completion: nil)

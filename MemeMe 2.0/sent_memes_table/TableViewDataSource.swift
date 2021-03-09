@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class TableViewDataSource : NSObject, UITableViewDataSource, UITableViewDelegate {
+class TableViewDataSource : NSObject, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = (UIApplication.shared.delegate as! AppDelegate).memes.count

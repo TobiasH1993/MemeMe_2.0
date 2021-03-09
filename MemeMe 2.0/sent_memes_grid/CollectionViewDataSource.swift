@@ -8,7 +8,8 @@
 import Foundation
 import UIKit
 
-class CollectionViewDataSource : NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+class CollectionViewDataSource : NSObject, UICollectionViewDataSource {
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return (UIApplication.shared.delegate as! AppDelegate).memes.count
@@ -21,4 +22,5 @@ class CollectionViewDataSource : NSObject, UICollectionViewDataSource, UICollect
         collectionCell.config(memeData: memes[indexPath.row])
         return collectionCell
     }
+    
 }
